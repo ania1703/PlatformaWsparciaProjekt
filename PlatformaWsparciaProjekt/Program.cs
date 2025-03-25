@@ -1,4 +1,8 @@
+using PlatformaWsparciaProjekt.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(options=>options.UseSqlServer("Data Source=seniorSupport.db"));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
