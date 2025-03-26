@@ -1,8 +1,9 @@
 using PlatformaWsparciaProjekt.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options=>options.UseSqlServer("Data Source=seniorSupport.db"));
+builder.Services.AddDbContext<AppDbContext>(options=>options.UseSqlServer("bazaProjektu"));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
