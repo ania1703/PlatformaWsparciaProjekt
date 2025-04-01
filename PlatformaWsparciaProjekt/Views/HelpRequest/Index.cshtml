@@ -1,0 +1,13 @@
+﻿@model IEnumerable<PlatformaWsparciaProjekt.Models.HelpRequest>
+
+<h2>Help Requests</h2>
+<a href="/HelpRequest/Create">+ Create new request</a>
+
+<ul>
+    @foreach (var request in Model)
+    {
+        <li><strong>@request.Title</strong>: @request.Description (@request.CreatedAt.ToShortDateString())</li>
+    }
+</ul>
+
+

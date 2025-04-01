@@ -1,0 +1,18 @@
+﻿@model PlatformaWsparciaProjekt.Models.HelpRequest
+
+<h2>Create Help Request</h2>
+
+<form asp-action="Create" method="post">
+    <div>
+        <label>Title:</label>
+        <input asp-for="Title" />
+    </div>
+
+    <div>
+        <label>Description:</label>
+        <textarea asp-for="Description"></textarea>
+    </div>
+
+    <button type="submit">Submit</button>
+</form>
+
