@@ -7,6 +7,7 @@ namespace PlatformaWsparciaProjekt.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
+        public DbSet<HelpRequest> HelpRequests { get; set; }
         public DbSet<Senior> Seniors { get; set; }
         public DbSet<Volunteer> Volunteers { get; set; }
         public DbSet<Request> Requests { get; set; }
