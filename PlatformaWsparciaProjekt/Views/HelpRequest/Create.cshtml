@@ -13,6 +13,25 @@
         <textarea asp-for="Description"></textarea>
     </div>
 
+    <div>
+        <label>Category:</label>
+        <select asp-for="Category">
+            <option value="Shopping">Shopping</option>
+            <option value="Companionship">Companionship</option>
+            <option value="PetCare">Pet Care</option>
+            <!-- Dodaj więcej kategorii, jeśli chcesz -->
+        </select>
+    </div>
+
+    <div>
+        <label>Priority:</label>
+        <select asp-for="Priority">
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+        </select>
+    </div>
+
     <button type="submit">Submit</button>
 </form>
 
