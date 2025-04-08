@@ -12,8 +12,8 @@ using PlatformaWsparciaProjekt.Data;
 namespace PlatformaWsparciaProjekt.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250402083310_AddCategoryAndPriorityToHelpRequest")]
-    partial class AddCategoryAndPriorityToHelpRequest
+    [Migration("20250408184737_PlatformaRequest")]
+    partial class PlatformaRequest
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,10 @@ namespace PlatformaWsparciaProjekt.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -40,8 +44,11 @@ namespace PlatformaWsparciaProjekt.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SeniorId")
+                    b.Property<string>("Priority")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SeniorId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")

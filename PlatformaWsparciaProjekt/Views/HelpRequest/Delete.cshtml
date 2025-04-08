@@ -1,0 +1,16 @@
+﻿@model PlatformaWsparciaProjekt.Models.HelpRequest
+
+<h2 class="mb-4">Czy na pewno chcesz usunąć to zgłoszenie?</h2>
+
+<div class="card p-4 shadow-sm">
+    <h4>@Model.Title</h4>
+    <p>@Model.Description</p>
+    <p><strong>Kategoria:</strong> @Model.Category</p>
+    <p><strong>Priorytet:</strong> @Model.Priority</p>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Usuń</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Anuluj</a>
+    </form>
+</div>

@@ -2,24 +2,23 @@
 using Newtonsoft.Json.Linq;
 using PlatformaWsparciaProjekt.Models;
 
-namespace PlatformaWsparciaProjekt.Controllers
+public class WeatherController : Controller
 {
-    public class WeatherController : Controller
+    private readonly IConfiguration _configuration;
+
+    public WeatherController(IConfiguration configuration)
     {
-        private readonly IConfiguration _configuration;
+        _configuration = configuration;
+    }
 
-        public WeatherController(IConfiguration configuration)
+    public async Task<IActionResult> Index(string city = "Warsaw")
+    {
+        string apiKey = _configuration["OpenWeatherMap:ApiKey"];
+        string url = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric";
+
+        using (HttpClient client = new HttpClient())
         {
-            _configuration = configuration;
-        }
-
-        public async Task<IActionResult> Index(string city = "Warsaw")
-        {
-            string apiKey = _configuration["OpenWeatherMap:ApiKey"];
-            string url = $"https://api.openweathermap.org/data/2.5/weather={city}&appid={apiKey}&units=metric";
-
-
-            using (HttpClient client = new HttpClient())
+            try
             {
                 var response = await client.GetStringAsync(url);
                 var json = JObject.Parse(response);
@@ -34,7 +33,11 @@ namespace PlatformaWsparciaProjekt.Controllers
 
                 return View(model);
             }
+            catch
+            {
+                ViewBag.Error = "Nie udało się pobrać danych pogodowych.";
+                return View();
+            }
         }
     }
 }
-
