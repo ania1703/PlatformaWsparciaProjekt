@@ -1,37 +1,35 @@
 ﻿@model PlatformaWsparciaProjekt.Models.HelpRequest
 
-<h2>Create Help Request</h2>
+<h2 class="mb-4">Nowe Zgłoszenie Pomocy</h2>
 
-<form asp-action="Create" method="post">
-    <div>
-        <label>Title:</label>
-        <input asp-for="Title" />
+<form asp-action="Create" method="post" class="card p-4 shadow-sm">
+    <div class="mb-3">
+        <label class="form-label">Tytuł</label>
+        <input asp-for="Title" class="form-control" />
     </div>
 
-    <div>
-        <label>Description:</label>
-        <textarea asp-for="Description"></textarea>
+    <div class="mb-3">
+        <label class="form-label">Opis</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
     </div>
 
-    <div>
-        <label>Category:</label>
-        <select asp-for="Category">
-            <option value="Shopping">Shopping</option>
-            <option value="Companionship">Companionship</option>
-            <option value="PetCare">Pet Care</option>
-            <!-- Dodaj więcej kategorii, jeśli chcesz -->
+    <div class="mb-3">
+        <label class="form-label">Kategoria</label>
+        <select asp-for="Category" class="form-select">
+            <option value="Shopping">Zakupy</option>
+            <option value="Companionship">Towarzystwo</option>
+            <option value="PetCare">Opieka nad zwierzętami</option>
         </select>
     </div>
 
-    <div>
-        <label>Priority:</label>
-        <select asp-for="Priority">
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
+    <div class="mb-3">
+        <label class="form-label">Priorytet</label>
+        <select asp-for="Priority" class="form-select">
+            <option value="High">Wysoki</option>
+            <option value="Medium">Średni</option>
+            <option value="Low">Niski</option>
         </select>
     </div>
 
-    <button type="submit">Submit</button>
+    <button type="submit" class="btn btn-success">Zapisz zgłoszenie</button>
 </form>
-
