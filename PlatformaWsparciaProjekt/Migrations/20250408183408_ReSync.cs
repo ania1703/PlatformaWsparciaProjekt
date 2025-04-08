@@ -4,19 +4,16 @@
 
 namespace PlatformaWsparciaProjekt.Migrations
 {
-    /// <inheritdoc />
-    public partial class AddCategoryAndPriorityToHelpRequest : Migration
+    public partial class ReSync : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-
+            // Pusta metoda – nic nie zmieniamy w bazie
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-
+            // Pusta metoda – brak cofania
         }
     }
 }
