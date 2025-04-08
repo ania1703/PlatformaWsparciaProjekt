@@ -1,20 +1,22 @@
 ﻿@model IEnumerable<PlatformaWsparciaProjekt.Models.HelpRequest>
 
-<h2>Help Requests</h2>
-<a href="/HelpRequest/Create">+ Create new request</a>
+<h2 class="mb-4">Lista Zgłoszeń</h2>
 
+<a class="btn btn-primary mb-3" asp-controller="HelpRequest" asp-action="Create">+ Dodaj nowe zgłoszenie</a>
 
-<ul>
+<div class="row row-cols-1 row-cols-md-2 g-4">
     @foreach (var request in Model)
     {
-        <li><strong>@request.Title</strong>: @request.Description (@request.CreatedAt.ToShortDateString())
-            <br>
-            <strong>Category:</strong> @request.Category
-            <br>
-            <strong>Priority:</strong> @request.Priority
-
-        </li>
+        <div class="col">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@request.Title</h5>
+                    <p class="card-text">@request.Description</p>
+                    <p><strong>Kategoria:</strong> @request.Category</p>
+                    <p><strong>Priorytet:</strong> @request.Priority</p>
+                    <p class="text-muted"><small>Dodano: @request.CreatedAt.ToShortDateString()</small></p>
+                </div>
+            </div>
+        </div>
     }
-</ul>
-
-
+</div>
