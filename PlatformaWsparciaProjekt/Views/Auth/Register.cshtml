@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Rejestracja";
+}
+
+<h2 class="mb-4">Zarejestruj się</h2>
+
+<form asp-action="Register" method="post" class="card p-4 shadow-sm">
+    <div class="mb-3">
+        <label>Typ użytkownika</label>
+        <select name="role" class="form-select" required>
+            <option value="Senior">Senior</option>
+            <option value="Volunteer">Wolontariusz</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Imię</label>
+        <input name="firstName" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Nazwisko</label>
+        <input name="lastName" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Email</label>
+        <input name="email" type="email" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Telefon</label>
+        <input name="phone" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Hasło</label>
+        <input name="password" type="password" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-success">Zarejestruj się</button>
+</form>
