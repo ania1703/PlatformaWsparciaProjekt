@@ -1,12 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PlatformaWsparciaProjekt.Data;
 using PlatformaWsparciaProjekt.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace PlatformaWsparciaProjekt.Controllers
 {
+    [Authorize]
     public class HelpRequestController : Controller
     {
         private readonly AppDbContext _context;
+
 
         public HelpRequestController(AppDbContext context)
         {
@@ -16,32 +23,42 @@ namespace PlatformaWsparciaProjekt.Controllers
         // WYŚWIETLANIE LISTY ZGŁOSZEŃ
         public IActionResult Index()
         {
-            var requests = _context.HelpRequests.ToList();
+            var requests = _context.HelpRequests.Include(x=>x.Senior).Include(x=>x.Volunteer).ToList();
             return View(requests);
         }
 
-        // DODAWANIE NOWEGO ZGŁOSZENIA
+        // DODAWANIE NOWEGO ZGŁOSZENIA    var helpRequests = _context.HelpRequests
+                              
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(HelpRequest request)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(HelpRequest helpRequest)
         {
             if (ModelState.IsValid)
             {
-                _context.HelpRequests.Add(request);
-                _context.SaveChanges();
+                var userName = HttpContext.User.Identity.Name;
+                var userRole = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                // <--- przypisz zalogowanego usera
 
-                Console.WriteLine("Dodano zgłoszenie: " + request.Title); // tymczasowe logowanie
+                if (userRole == "Senior")
+                {
+                    helpRequest.Senior = _context.Seniors.First(x=>x.Id == userId);
 
-                return RedirectToAction("Index");
+                }
+
+
+                _context.Add(helpRequest);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            return View(request);
+            return View(helpRequest);
         }
-
-
+       
         // EDYCJA ZGŁOSZENIA
         public IActionResult Edit(int id)
         {
@@ -52,6 +69,8 @@ namespace PlatformaWsparciaProjekt.Controllers
             }
             return View(request);
         }
+
+       
 
         [HttpPost]
         public IActionResult Edit(HelpRequest request)
@@ -87,5 +106,30 @@ namespace PlatformaWsparciaProjekt.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> AddVolunteer(int id)
+        {
+            var request = _context.HelpRequests.Find(id);
+
+            if (request == null)
+            {
+                return NotFound();
+            }
+
+            var userRole = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            var userId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+
+            if (userRole == "Volunteer")
+            {
+                request.Volunteer = _context.Volunteers.First(x => x.Id == userId);
+            }
+
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+
+        }
     }
 }
+

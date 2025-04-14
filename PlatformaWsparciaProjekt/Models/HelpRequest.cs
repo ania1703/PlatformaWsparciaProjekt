@@ -15,12 +15,12 @@ namespace PlatformaWsparciaProjekt.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public string? SeniorId { get; set; }  // pole opcjonalne
+        public Senior? Senior { get; set; }  // pole opcjonalne
                                                // to be linked with Identity in the future
-
         public string Category { get; set; } // Kategoria pomocy (np. zakupy, towarzystwo)
         public string Priority { get; set; } // Priorytet pomocy (np. wysoki, średni, niski)
 
+        public Volunteer? Volunteer { get; set; }
     }
 }
 
