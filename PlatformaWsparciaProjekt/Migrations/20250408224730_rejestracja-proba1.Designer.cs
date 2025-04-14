@@ -12,8 +12,8 @@ using PlatformaWsparciaProjekt.Data;
 namespace PlatformaWsparciaProjekt.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250401164527_AddHelpRequest")]
-    partial class AddHelpRequest
+    [Migration("20250408224730_rejestracja-proba1")]
+    partial class rejestracjaproba1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,10 @@ namespace PlatformaWsparciaProjekt.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -40,8 +44,11 @@ namespace PlatformaWsparciaProjekt.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SeniorId")
+                    b.Property<string>("Priority")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SeniorId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -105,6 +112,13 @@ namespace PlatformaWsparciaProjekt.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -112,6 +126,17 @@ namespace PlatformaWsparciaProjekt.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Rating")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -126,6 +151,9 @@ namespace PlatformaWsparciaProjekt.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -138,9 +166,16 @@ namespace PlatformaWsparciaProjekt.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Rating")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 

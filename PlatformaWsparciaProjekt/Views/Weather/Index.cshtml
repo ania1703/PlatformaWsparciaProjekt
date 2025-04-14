@@ -1,0 +1,16 @@
+﻿@model PlatformaWsparciaProjekt.Models.WeatherInfo
+
+<h2>Pogoda w @Model?.City</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+else if (Model != null)
+{
+    <div class="card p-4 shadow-sm" style="max-width: 300px;">
+        <h4>@Model.Description</h4>
+        <p><strong>Temperatura:</strong> @Model.Temperature &deg;C</p>
+        <img src="@Model.IconUrl" alt="Ikona pogody" />
+    </div>
+}
