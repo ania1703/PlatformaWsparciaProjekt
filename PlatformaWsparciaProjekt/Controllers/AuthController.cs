@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Linq;
 using PlatformaWsparciaProjekt.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlatformaWsparciaProjekt.Controllers
 {
@@ -18,48 +19,54 @@ namespace PlatformaWsparciaProjekt.Controllers
             _context = context;
         }
         [HttpGet]
+        [HttpGet]
         public IActionResult Register()
         {
-            return View();
+            return View(new RegisterViewModel());
         }
 
         [HttpPost]
-        public IActionResult Register(string role, string firstName, string lastName, string email, string phone, string password)
+        public IActionResult Register(RegisterViewModel model)
         {
-            if (role == "Senior")
+            if (!ModelState.IsValid)
+            {
+                return View(model); // wraca z błędami walidacji
+            }
+
+            if (model.Role == "Senior")
             {
                 var newSenior = new Senior
                 {
-                    FirstName = firstName,
-                    LastName = lastName,
-                    Email = email,
-                    Phone = phone,
-                    Password = password,
-                    Age = 70, // możesz też dodać pole formularza dla wieku
-                    Address = "brak", // lub dodać jako input
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    Phone = model.Phone,
+                    Password = model.Password,
+                    Age = 70,
+                    Address = "brak",
                     Bio = ""
                 };
 
                 _context.Seniors.Add(newSenior);
             }
-            else if (role == "Volunteer")
+            else if (model.Role == "Volunteer")
             {
                 var newVolunteer = new Volunteer
                 {
-                    FirstName = firstName,
-                    LastName = lastName,
-                    Email = email,
-                    Phone = phone,
-                    Password = password
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    Phone = model.Phone,
+                    Password = model.Password
                 };
 
                 _context.Volunteers.Add(newVolunteer);
             }
 
             _context.SaveChanges();
-
             return RedirectToAction("Login");
         }
+
 
         [HttpGet]
         public IActionResult Login()
@@ -79,13 +86,15 @@ namespace PlatformaWsparciaProjekt.Controllers
                 ViewBag.Error = "Nieprawidłowy email lub hasło.";
                 return View();
             }
-
+            
             // Ustalamy dane do roli i imienia użytkownika
+            int idUser = senior != null ? senior.Id : volunteer.Id;
             string userName = senior != null ? senior.FirstName : volunteer.FirstName;
             string userRole = senior != null ? "Senior" : "Volunteer";
 
             var claims = new List<Claim>
             {
+                new Claim(ClaimTypes.NameIdentifier, idUser.ToString()),
                 new Claim(ClaimTypes.Name, userName),
                 new Claim(ClaimTypes.Role, userRole)
             };

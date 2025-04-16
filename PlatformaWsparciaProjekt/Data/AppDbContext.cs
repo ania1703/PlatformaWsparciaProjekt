@@ -14,7 +14,9 @@ namespace PlatformaWsparciaProjekt.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Request>()
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Request>() // istniejące
                 .HasOne(r => r.Senior)
                 .WithMany(s => s.Requests)
                 .HasForeignKey(r => r.SeniorId);
@@ -24,6 +26,20 @@ namespace PlatformaWsparciaProjekt.Data
                 .WithMany(v => v.AssignedRequests)
                 .HasForeignKey(r => r.VolunteerId)
                 .IsRequired(false);
+
+            // NOWE - konfiguracja HelpRequest
+            modelBuilder.Entity<HelpRequest>()
+                .HasOne(hr => hr.Senior)
+                .WithMany()
+                .HasForeignKey(hr => hr.SeniorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<HelpRequest>()
+                .HasOne(hr => hr.Volunteer)
+                .WithMany()
+                .HasForeignKey(hr => hr.VolunteerId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
+
     }
 }

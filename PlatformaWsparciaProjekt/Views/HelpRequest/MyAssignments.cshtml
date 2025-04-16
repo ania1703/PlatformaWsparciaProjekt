@@ -1,0 +1,28 @@
+﻿@model List<PlatformaWsparciaProjekt.Models.HelpRequest>
+
+<h2>Moje przypisane zgłoszenia</h2>
+<p>Jesteś zalogowany jako: @User.Identity.Name</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tytuł</th>
+            <th>Kategoria</th>
+            <th>Priorytet</th>
+            <th>Opis</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Category</td>
+                <td>@item.Priority</td>
+                <td>@item.Description</td>
+                <td>@item.CreatedAt.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>

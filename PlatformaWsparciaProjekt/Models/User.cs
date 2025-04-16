@@ -1,4 +1,6 @@
-﻿namespace PlatformaWsparciaProjekt.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PlatformaWsparciaProjekt.Models
 {
     public abstract class User
     {
