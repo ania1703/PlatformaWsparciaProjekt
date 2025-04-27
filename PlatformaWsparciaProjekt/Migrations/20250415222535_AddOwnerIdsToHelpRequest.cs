@@ -5,7 +5,7 @@
 namespace PlatformaWsparciaProjekt.Migrations
 {
     /// <inheritdoc />
-    public partial class rejestracja : Migration
+    public partial class AddOwnerIdsToHelpRequest : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

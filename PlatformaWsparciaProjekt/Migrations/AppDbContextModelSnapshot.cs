@@ -37,22 +37,34 @@ namespace PlatformaWsparciaProjekt.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("Priority")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SeniorId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("SeniorId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("VolunteerId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SeniorId");
+
+                    b.HasIndex("VolunteerId");
 
                     b.ToTable("HelpRequests");
                 });
@@ -177,6 +189,23 @@ namespace PlatformaWsparciaProjekt.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Volunteers");
+                });
+
+            modelBuilder.Entity("PlatformaWsparciaProjekt.Models.HelpRequest", b =>
+                {
+                    b.HasOne("PlatformaWsparciaProjekt.Models.Senior", "Senior")
+                        .WithMany()
+                        .HasForeignKey("SeniorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("PlatformaWsparciaProjekt.Models.Volunteer", "Volunteer")
+                        .WithMany()
+                        .HasForeignKey("VolunteerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Senior");
+
+                    b.Navigation("Volunteer");
                 });
 
             modelBuilder.Entity("PlatformaWsparciaProjekt.Models.Request", b =>
