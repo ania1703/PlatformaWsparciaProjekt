@@ -2,11 +2,13 @@ using PlatformaWsparciaProjekt.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Po³¹czenie z baz¹ danych
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+
 
 // Uwierzytelnianie za pomoc¹ ciasteczek (Cookie Auth)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

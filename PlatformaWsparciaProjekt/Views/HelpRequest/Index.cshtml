@@ -1,4 +1,4 @@
-﻿@using System.Security.Claims
+@using System.Security.Claims
 @model IEnumerable<PlatformaWsparciaProjekt.Models.HelpRequest>
 
 @{
@@ -21,6 +21,14 @@
                     <p><strong>Kategoria:</strong> @request.Category</p>
                     <p><strong>Priorytet:</strong> @request.Priority</p>
                     <p class="text-muted"><small>Dodano: @request.CreatedAt.ToShortDateString()</small></p>
+                    <p class="text-muted"><small>Imię seniora: @request.Senior.FirstName</small></p>
+                    <p class="text-muted"><small>Nazwisko seniora: @request.Senior.LastName</small></p>
+                    @if (@request.Volunteer != null)
+                    {
+                        <p class="text-muted"><small>Imię wolontariusza: @request.Volunteer.FirstName</small></p>
+                        <p class="text-muted"><small>Nazwisko wolontariusza: @request.Volunteer.LastName</small></p>
+                    }
+
 
                     <p class="text-muted"><small>Imię seniora: @request.Senior?.FirstName</small></p>
                     <p class="text-muted"><small>Nazwisko seniora: @request.Senior?.LastName</small></p>
@@ -32,6 +40,13 @@
                     }
 
                     <div class="mt-3">
+                        <a class="btn btn-outline-primary btn-sm me-2" asp-action="Edit" asp-route-id="@request.Id">Edytuj</a>
+                        <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@request.Id">Usuń</a>
+                        @if (@User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value == "Volunteer")
+                        {
+                            <a class="btn btn-outline-danger btn-sm" asp-action="AddVolunteer" asp-route-id="@request.Id">Przypisz do mnie</a>
+
+                        }
                         @if (userRole == "Volunteer" && request.Volunteer == null)
                         {
                             <a class="btn btn-outline-success btn-sm" asp-action="AddVolunteer" asp-route-id="@request.Id">Przypisz do mnie</a>
@@ -44,8 +59,6 @@
                         }
 
                        
-
-
                     </div>
 
 

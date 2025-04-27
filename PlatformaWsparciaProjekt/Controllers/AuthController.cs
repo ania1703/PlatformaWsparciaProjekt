@@ -91,12 +91,15 @@ namespace PlatformaWsparciaProjekt.Controllers
             int idUser = senior != null ? senior.Id : volunteer.Id;
             string userName = senior != null ? senior.FirstName : volunteer.FirstName;
             string userRole = senior != null ? "Senior" : "Volunteer";
+            string userId = senior != null ? senior.Id.ToString() : volunteer.Id.ToString();
+
 
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, idUser.ToString()),
                 new Claim(ClaimTypes.Name, userName),
-                new Claim(ClaimTypes.Role, userRole)
+                new Claim(ClaimTypes.Role, userRole),
+                new Claim(ClaimTypes.NameIdentifier, userId)
             };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
