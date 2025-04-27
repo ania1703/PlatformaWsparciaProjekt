@@ -18,7 +18,7 @@ namespace PlatformaWsparciaProjekt.Models
         public string LastName { get; set; }
 
         [Required(ErrorMessage = "Email jest wymagany")]
-        [EmailAddress(ErrorMessage = "Wprowadź poprawny adres e-mail (np. jan@example.com).")]
+        [RegularExpression(@"^\d{9}$", ErrorMessage = "Wprowadź poprawny adres e-mail (np. jan@example.com).")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Telefon jest wymagany")]

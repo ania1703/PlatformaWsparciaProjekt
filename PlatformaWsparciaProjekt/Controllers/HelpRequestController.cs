@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PlatformaWsparciaProjekt.Data;
 using PlatformaWsparciaProjekt.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 using System.Linq;
 
 namespace PlatformaWsparciaProjekt.Controllers
@@ -18,10 +18,11 @@ namespace PlatformaWsparciaProjekt.Controllers
             _context = context;
         }
 
-        // WYŚWIETLANIE LISTY ZGŁOSZEŃ
+        private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        private string GetUserRole() => User.FindFirstValue(ClaimTypes.Role);
+
         public IActionResult Index()
         {
-            // Pobieramy wszystkie zgłoszenia
             var allRequests = _context.HelpRequests
                 .Include(r => r.Senior)
                 .Include(r => r.Volunteer)
@@ -30,8 +31,8 @@ namespace PlatformaWsparciaProjekt.Controllers
             return View(allRequests);
         }
 
-
-        // DODAWANIE NOWEGO ZGŁOSZENIA
+        // DODAWANIE NOWEGO ZGŁOSZENIA – tylko senior
+        [Authorize(Roles = "Senior")]
         public IActionResult Create()
         {
             return View();
@@ -39,19 +40,14 @@ namespace PlatformaWsparciaProjekt.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Senior")]
         public async Task<IActionResult> Create(HelpRequest helpRequest)
         {
             if (ModelState.IsValid)
             {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var userRole = User.FindFirstValue(ClaimTypes.Role);
-
+                var userId = GetUserId();
                 helpRequest.CreatedByUserId = userId;
-
-                if (userRole == "Senior")
-                    helpRequest.SeniorId = userId;
-                else if (userRole == "Volunteer")
-                    helpRequest.VolunteerId = userId;
+                helpRequest.SeniorId = userId;
 
                 _context.Add(helpRequest);
                 await _context.SaveChangesAsync();
@@ -61,37 +57,28 @@ namespace PlatformaWsparciaProjekt.Controllers
             return View(helpRequest);
         }
 
-
-        // EDYCJA ZGŁOSZENIA
+        // EDYCJA ZGŁOSZENIA – tylko dla właściciela (seniora)
+        [Authorize(Roles = "Senior")]
         public IActionResult Edit(int id)
         {
-            var request = _context.HelpRequests.Include(r => r.Senior).FirstOrDefault(r => r.Id == id);
+            var request = _context.HelpRequests.FirstOrDefault(r => r.Id == id);
             if (request == null) return NotFound();
 
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userRole = User.FindFirstValue(ClaimTypes.Role);
-
-            if ((userRole == "Senior" && request.SeniorId != userId) ||
-                (userRole == "Volunteer" && request.VolunteerId != userId))
-            {
+            if (request.SeniorId != GetUserId())
                 return Forbid();
-            }
 
             return View(request);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Senior")]
         public IActionResult Edit(HelpRequest request)
         {
-            var original = _context.HelpRequests.Include(r => r.Senior).FirstOrDefault(r => r.Id == request.Id);
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userRole = User.FindFirstValue(ClaimTypes.Role);
+            var original = _context.HelpRequests.FirstOrDefault(r => r.Id == request.Id);
+            if (original == null) return NotFound();
 
-            if ((userRole == "Senior" && original.SeniorId != userId) ||
-                (userRole == "Volunteer" && original.VolunteerId != userId))
-            {
+            if (original.SeniorId != GetUserId())
                 return Forbid();
-            }
 
             if (ModelState.IsValid)
             {
@@ -99,65 +86,52 @@ namespace PlatformaWsparciaProjekt.Controllers
                 original.Description = request.Description;
                 original.Category = request.Category;
                 original.Priority = request.Priority;
+
                 _context.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
             return View(request);
         }
 
-        // USUWANIE ZGŁOSZENIA
+        // USUWANIE ZGŁOSZENIA – tylko dla właściciela (seniora)
+        [Authorize(Roles = "Senior")]
         public IActionResult Delete(int id)
         {
-            var request = _context.HelpRequests.Include(r => r.Senior).FirstOrDefault(r => r.Id == id);
+            var request = _context.HelpRequests.FirstOrDefault(r => r.Id == id);
             if (request == null) return NotFound();
 
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userRole = User.FindFirstValue(ClaimTypes.Role);
-
-            if ((userRole == "Senior" && request.SeniorId != userId) ||
-                (userRole == "Volunteer" && request.VolunteerId != userId))
-            {
+            if (request.SeniorId != GetUserId())
                 return Forbid();
-            }
 
             return View(request);
         }
 
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Senior")]
         public IActionResult DeleteConfirmed(int id)
         {
-            var request = _context.HelpRequests.Include(r => r.Senior).FirstOrDefault(r => r.Id == id);
+            var request = _context.HelpRequests.FirstOrDefault(r => r.Id == id);
             if (request == null) return NotFound();
 
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userRole = User.FindFirstValue(ClaimTypes.Role);
-
-            if ((userRole == "Senior" && request.SeniorId != userId) ||
-                (userRole == "Volunteer" && request.VolunteerId != userId))
-            {
+            if (request.SeniorId != GetUserId())
                 return Forbid();
-            }
 
             _context.HelpRequests.Remove(request);
             _context.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         // PRZYPISANIE WOLONTARIUSZA DO ZGŁOSZENIA
+        [Authorize(Roles = "Volunteer")]
         public async Task<IActionResult> AddVolunteer(int id)
         {
             var request = _context.HelpRequests.Find(id);
             if (request == null) return NotFound();
 
-            var userRole = User.FindFirstValue(ClaimTypes.Role);
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            if (userRole == "Volunteer")
-            {
-                request.Volunteer = _context.Volunteers.First(x => x.Id == userId);
-                request.VolunteerId = userId;
-            }
+            var userId = GetUserId();
+            request.VolunteerId = userId;
+            request.Volunteer = _context.Volunteers.FirstOrDefault(v => v.Id == userId);
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
