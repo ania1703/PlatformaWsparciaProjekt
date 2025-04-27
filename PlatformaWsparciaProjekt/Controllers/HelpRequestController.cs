@@ -19,16 +19,50 @@ namespace PlatformaWsparciaProjekt.Controllers
         }
 
         // WYŚWIETLANIE LISTY ZGŁOSZEŃ
-        public IActionResult Index()
+        public IActionResult Index(string sortOrder, string searchString)
         {
-            // Pobieramy wszystkie zgłoszenia
-            var allRequests = _context.HelpRequests
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.DateSortParam = sortOrder == "date_desc" ? "" : "date_desc";
+            ViewBag.PrioritySortParam = sortOrder == "priority" ? "priority_desc" : "priority";
+
+            ViewBag.CurrentFilter = searchString;
+
+            var requests = _context.HelpRequests
                 .Include(r => r.Senior)
                 .Include(r => r.Volunteer)
-                .ToList();
+                .AsQueryable();
 
-            return View(allRequests);
+            // 🔍 Filtrowanie po tytule
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                requests = requests.Where(r => r.Title.Contains(searchString));
+            }
+
+            // 🔃 Sortowanie
+            switch (sortOrder)
+            {
+                case "date_desc":
+                    requests = requests.OrderByDescending(r => r.CreatedAt);
+                    break;
+                case "priority":
+                    requests = requests.OrderBy(r =>
+    r.Priority == "High" ? 1 :
+    r.Priority == "Medium" ? 2 :
+    r.Priority == "Low" ? 3 : 4);
+
+                    break;
+                case "priority_desc":
+                    requests = requests.OrderByDescending(r => r.Priority);
+                    break;
+                default:
+                    requests = requests.OrderBy(r => r.CreatedAt);
+                    break;
+            }
+
+            return View(requests.ToList());
         }
+
+
 
 
         // DODAWANIE NOWEGO ZGŁOSZENIA

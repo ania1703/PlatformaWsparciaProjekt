@@ -11,12 +11,13 @@ namespace PlatformaWsparciaProjekt.Data
         public DbSet<Senior> Seniors { get; set; }
         public DbSet<Volunteer> Volunteers { get; set; }
         public DbSet<Request> Requests { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Request>() // istniejące
+            modelBuilder.Entity<Request>()
                 .HasOne(r => r.Senior)
                 .WithMany(s => s.Requests)
                 .HasForeignKey(r => r.SeniorId);
@@ -27,7 +28,6 @@ namespace PlatformaWsparciaProjekt.Data
                 .HasForeignKey(r => r.VolunteerId)
                 .IsRequired(false);
 
-            // NOWE - konfiguracja HelpRequest
             modelBuilder.Entity<HelpRequest>()
                 .HasOne(hr => hr.Senior)
                 .WithMany()
@@ -39,7 +39,19 @@ namespace PlatformaWsparciaProjekt.Data
                 .WithMany()
                 .HasForeignKey(hr => hr.VolunteerId)
                 .OnDelete(DeleteBehavior.Restrict);
-        }
 
+            // 🔧 NOWE: konfiguracja Rating, żeby uniknąć konfliktu cascade paths
+            modelBuilder.Entity<Rating>()
+                .HasOne(r => r.User)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Rating>()
+                .HasOne(r => r.RatedBy)
+                .WithMany()
+                .HasForeignKey(r => r.RatedById)
+                .OnDelete(DeleteBehavior.NoAction);
+        }
     }
 }

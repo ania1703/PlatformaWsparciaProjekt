@@ -69,6 +69,39 @@ namespace PlatformaWsparciaProjekt.Migrations
                     b.ToTable("HelpRequests");
                 });
 
+            modelBuilder.Entity("PlatformaWsparciaProjekt.Models.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RatedById")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Score")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RatedById");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Ratings");
+                });
+
             modelBuilder.Entity("PlatformaWsparciaProjekt.Models.Request", b =>
                 {
                     b.Property<int>("Id")
@@ -102,13 +135,53 @@ namespace PlatformaWsparciaProjekt.Migrations
                     b.ToTable("Requests");
                 });
 
-            modelBuilder.Entity("PlatformaWsparciaProjekt.Models.Senior", b =>
+            modelBuilder.Entity("PlatformaWsparciaProjekt.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Rating")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User");
+
+                    b.HasDiscriminator().HasValue("User");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("PlatformaWsparciaProjekt.Models.Senior", b =>
+                {
+                    b.HasBaseType("PlatformaWsparciaProjekt.Models.User");
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -121,74 +194,28 @@ namespace PlatformaWsparciaProjekt.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double?>("Rating")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Seniors");
+                    b.HasDiscriminator().HasValue("Senior");
                 });
 
             modelBuilder.Entity("PlatformaWsparciaProjekt.Models.Volunteer", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasBaseType("PlatformaWsparciaProjekt.Models.User");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.ToTable("User", t =>
+                        {
+                            t.Property("Password")
+                                .HasColumnName("Volunteer_Password");
+                        });
 
-                    b.Property<double?>("Rating")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Volunteers");
+                    b.HasDiscriminator().HasValue("Volunteer");
                 });
 
             modelBuilder.Entity("PlatformaWsparciaProjekt.Models.HelpRequest", b =>
@@ -206,6 +233,24 @@ namespace PlatformaWsparciaProjekt.Migrations
                     b.Navigation("Senior");
 
                     b.Navigation("Volunteer");
+                });
+
+            modelBuilder.Entity("PlatformaWsparciaProjekt.Models.Rating", b =>
+                {
+                    b.HasOne("PlatformaWsparciaProjekt.Models.User", "RatedBy")
+                        .WithMany()
+                        .HasForeignKey("RatedById")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("PlatformaWsparciaProjekt.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("RatedBy");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PlatformaWsparciaProjekt.Models.Request", b =>

@@ -1,4 +1,6 @@
-﻿<head>
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Platforma Wsparcia</title>
@@ -16,7 +18,7 @@
         }
 
         .navbar {
-            background-color: #6f42c1; /* fiolet, możesz dać #4caf50 jak wolisz zieleń */
+            background-color: #6f42c1;
         }
 
         .nav-link {
@@ -49,8 +51,15 @@
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="HelpRequest" asp-action="Index">Zgłoszenia</a>
                     </li>
-                 
-                    
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Rating" asp-action="Index">Oceny</a>
+                    </li>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Senior"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Rating" asp-action="Create">Oceń wolontariusza</a>
+                        </li>
+                    }
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Volunteer"))
                     {
                         <li class="nav-item">
@@ -58,7 +67,6 @@
                         </li>
                     }
                 </ul>
-
 
                 <ul class="navbar-nav ms-auto">
                     @if (User.Identity.IsAuthenticated)
@@ -83,7 +91,6 @@
                         <a class="nav-link" asp-controller="Weather" asp-action="Index">🌤️</a>
                     </li>
                 </ul>
-
             </div>
         </div>
     </nav>

@@ -2,11 +2,27 @@
 @model IEnumerable<PlatformaWsparciaProjekt.Models.HelpRequest>
 
 @{
+    ViewData["Title"] = "Zgłoszenia";
     var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
     var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+    var isDescending = ViewBag.CurrentSort == "date_desc";
+    var sortLabel = isDescending ? "Sortuj rosnąco" : "Sortuj malejąco";
 }
 
 <h2 class="mb-4">Lista Zgłoszeń</h2>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <form asp-action="Index" method="get" class="d-flex">
+            <input type="text" name="searchString" value="@ViewBag.CurrentFilter" class="form-control me-2" placeholder="Szukaj po tytule..." />
+            <button type="submit" class="btn btn-outline-primary">Szukaj</button>
+        </form>
+    </div>
+    <div class="col-md-6 text-end">
+        <a class="btn btn-outline-secondary me-2" asp-action="Index" asp-route-sortOrder="@ViewBag.DateSortParam">📅 Sortuj wg daty</a>
+        <a class="btn btn-outline-secondary" asp-action="Index" asp-route-sortOrder="@ViewBag.PrioritySortParam">🚦 Sortuj wg priorytetu</a>
+    </div>
+</div>
 
 <a class="btn btn-primary mb-3" asp-controller="HelpRequest" asp-action="Create">+ Dodaj nowe zgłoszenie</a>
 
@@ -42,13 +58,7 @@
                             <a class="btn btn-outline-primary btn-sm me-2" asp-action="Edit" asp-route-id="@request.Id">Edytuj</a>
                             <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@request.Id">Usuń</a>
                         }
-
-                       
-
-
                     </div>
-
-
                 </div>
             </div>
         </div>

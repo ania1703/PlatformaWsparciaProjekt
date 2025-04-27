@@ -1,0 +1,39 @@
+﻿@model List<PlatformaWsparciaProjekt.Models.Rating>
+@{
+    ViewData["Title"] = "Oceny";
+}
+
+<h2>Wystawione oceny</h2>
+
+@if (!Model.Any())
+{
+    <p>Brak ocen.</p>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Wolontariusz</th>
+                <th>Ocena</th>
+                <th>Komentarz</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var rating in Model)
+            {
+                <tr>
+                    <td>
+                        @(rating.User != null
+                            ? rating.User.FirstName + " " + rating.User.LastName
+                            : "Noname")
+                    </td>
+                    <td>@rating.Score</td>
+                    <td>@rating.Comment</td>
+                    <td>@rating.RatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
