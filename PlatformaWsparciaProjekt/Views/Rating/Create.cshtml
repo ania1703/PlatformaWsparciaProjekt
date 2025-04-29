@@ -4,13 +4,16 @@
     ViewData["Title"] = "Oceń wolontariusza";
 }
 
+
 <h2>Oceń wolontariusza</h2>
+
 
 <form asp-action="Create" method="post">
     <div class="mb-3">
         <label class="form-label">Wolontariusz</label>
-        <select class="form-select" asp-for="UserId" asp-items="@(new SelectList(ViewBag.Volunteers, "Id", "FirstName"))">
-            <option value="">-- Wybierz --</option>
+        <select class="form-select" asp-for="VolunteerId" asp-items="@(new SelectList(ViewBag.Volunteers, "Id", "FirstName"))">
+
+        <option value="">-- Wybierz --</option>
         </select>
     </div>
 

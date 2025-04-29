@@ -11,6 +11,7 @@
 }
 else
 {
+
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -25,8 +26,8 @@ else
             {
                 <tr>
                     <td>
-                        @(rating.User != null
-                            ? rating.User.FirstName + " " + rating.User.LastName
+                        @(rating.Volunteer != null
+                            ? rating.Volunteer.FirstName + " " + rating.Volunteer.LastName
                             : "Noname")
                     </td>
                     <td>@rating.Score</td>

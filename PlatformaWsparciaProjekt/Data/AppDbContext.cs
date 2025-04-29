@@ -42,16 +42,13 @@ namespace PlatformaWsparciaProjekt.Data
 
             // 🔧 NOWE: konfiguracja Rating, żeby uniknąć konfliktu cascade paths
             modelBuilder.Entity<Rating>()
-                .HasOne(r => r.User)
+                .HasOne(r => r.Volunteer)
                 .WithMany()
-                .HasForeignKey(r => r.UserId)
+                .HasForeignKey(r => r.VolunteerId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Rating>()
-                .HasOne(r => r.RatedBy)
-                .WithMany()
-                .HasForeignKey(r => r.RatedById)
-                .OnDelete(DeleteBehavior.NoAction);
+                .Ignore(r => r.RatedBy);
         }
     }
 }

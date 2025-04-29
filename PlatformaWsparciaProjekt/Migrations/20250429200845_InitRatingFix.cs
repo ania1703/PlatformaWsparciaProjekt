@@ -6,33 +6,50 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PlatformaWsparciaProjekt.Migrations
 {
     /// <inheritdoc />
-    public partial class NazwaMigracji : Migration
+    public partial class InitRatingFix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Seniors",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Rating = table.Column<double>(type: "float", nullable: true),
-                    Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
-                    Age = table.Column<int>(type: "int", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Volunteer_Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Rating = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_Seniors", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Volunteers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Rating = table.Column<double>(type: "float", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Volunteers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -54,15 +71,15 @@ namespace PlatformaWsparciaProjekt.Migrations
                 {
                     table.PrimaryKey("PK_HelpRequests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_HelpRequests_User_SeniorId",
+                        name: "FK_HelpRequests_Seniors_SeniorId",
                         column: x => x.SeniorId,
-                        principalTable: "User",
+                        principalTable: "Seniors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_HelpRequests_User_VolunteerId",
+                        name: "FK_HelpRequests_Volunteers_VolunteerId",
                         column: x => x.VolunteerId,
-                        principalTable: "User",
+                        principalTable: "Volunteers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -73,7 +90,7 @@ namespace PlatformaWsparciaProjekt.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: true),
+                    VolunteerId = table.Column<int>(type: "int", nullable: true),
                     RatedById = table.Column<int>(type: "int", nullable: false),
                     Score = table.Column<double>(type: "float", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -83,14 +100,9 @@ namespace PlatformaWsparciaProjekt.Migrations
                 {
                     table.PrimaryKey("PK_Ratings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Ratings_User_RatedById",
-                        column: x => x.RatedById,
-                        principalTable: "User",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Ratings_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
+                        name: "FK_Ratings_Volunteers_VolunteerId",
+                        column: x => x.VolunteerId,
+                        principalTable: "Volunteers",
                         principalColumn: "Id");
                 });
 
@@ -110,15 +122,15 @@ namespace PlatformaWsparciaProjekt.Migrations
                 {
                     table.PrimaryKey("PK_Requests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Requests_User_SeniorId",
+                        name: "FK_Requests_Seniors_SeniorId",
                         column: x => x.SeniorId,
-                        principalTable: "User",
+                        principalTable: "Seniors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Requests_User_VolunteerId",
+                        name: "FK_Requests_Volunteers_VolunteerId",
                         column: x => x.VolunteerId,
-                        principalTable: "User",
+                        principalTable: "Volunteers",
                         principalColumn: "Id");
                 });
 
@@ -133,14 +145,9 @@ namespace PlatformaWsparciaProjekt.Migrations
                 column: "VolunteerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ratings_RatedById",
+                name: "IX_Ratings_VolunteerId",
                 table: "Ratings",
-                column: "RatedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Ratings_UserId",
-                table: "Ratings",
-                column: "UserId");
+                column: "VolunteerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Requests_SeniorId",
@@ -166,7 +173,10 @@ namespace PlatformaWsparciaProjekt.Migrations
                 name: "Requests");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Seniors");
+
+            migrationBuilder.DropTable(
+                name: "Volunteers");
         }
     }
 }
