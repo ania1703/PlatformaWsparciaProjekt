@@ -1,4 +1,5 @@
 ﻿@model List<PlatformaWsparciaProjekt.Models.HelpRequest>
+@using System.Security.Claims
 
 <h2>Moje przypisane zgłoszenia</h2>
 <p>Jesteś zalogowany jako: @User.Identity.Name</p>
@@ -11,17 +12,27 @@
             <th>Priorytet</th>
             <th>Opis</th>
             <th>Data</th>
+            <th>Akcje</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));  // Pobranie userId
+            var userRole = User.FindFirstValue(ClaimTypes.Role);  // Pobranie roli użytkownika
+
             <tr>
                 <td>@item.Title</td>
                 <td>@item.Category</td>
                 <td>@item.Priority</td>
                 <td>@item.Description</td>
                 <td>@item.CreatedAt.ToShortDateString()</td>
+                <td>
+                    @if (userRole == "Volunteer" && item.VolunteerId == userId)  // Sprawdzamy, czy wolontariusz jest przypisany
+                    {
+                        <a class="btn btn-outline-warning btn-sm" asp-action="RemoveVolunteer" asp-route-id="@item.Id">Usuń przypisanie</a>
+                    }
+                </td>
             </tr>
         }
     </tbody>

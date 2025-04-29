@@ -63,6 +63,22 @@ namespace PlatformaWsparciaProjekt.Controllers
         }
 
 
+        [Authorize(Roles = "Volunteer")]
+        public IActionResult MyAssignments()
+        {
+            // Pobieranie ID zalogowanego wolontariusza
+            var volunteerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            // Pobieranie zgłoszeń przypisanych do wolontariusza
+            var assignedRequests = _context.HelpRequests
+                .Where(hr => hr.VolunteerId == volunteerId)
+                .ToList();
+
+            return View(assignedRequests);
+        }
+       
+
+
 
 
         // DODAWANIE NOWEGO ZGŁOSZENIA
@@ -178,7 +194,7 @@ namespace PlatformaWsparciaProjekt.Controllers
             return RedirectToAction("Index");
         }
 
-        // PRZYPISANIE WOLONTARIUSZA DO ZGŁOSZENIA
+        //przypisanie do zgłoszenia
         public async Task<IActionResult> AddVolunteer(int id)
         {
             var request = _context.HelpRequests.Find(id);
@@ -196,5 +212,33 @@ namespace PlatformaWsparciaProjekt.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+
+        //Funkcja usuwająca przypisanie do zgłoszenia.
+        [Authorize(Roles = "Volunteer")]
+        public async Task<IActionResult> RemoveVolunteer(int id)
+        {
+            var request = await _context.HelpRequests
+                .Include(r => r.Volunteer)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (request == null)
+            {
+                return NotFound();
+            }
+
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            if (request.Volunteer == null || request.Volunteer.Id != userId)
+            {
+                return Forbid(); // tylko przypisany wolontariusz może się wypisać
+            }
+
+            request.Volunteer = null;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
