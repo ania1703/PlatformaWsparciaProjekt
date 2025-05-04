@@ -24,5 +24,8 @@ namespace PlatformaWsparciaProjekt.Models
         public Senior? Senior { get; set; }  // Obiekt Senior, który składa zgłoszenie
         public Volunteer? Volunteer { get; set; }  // Obiekt Volunteer, który jest przypisany do zgłoszenia (może być null, jeśli nie ma przypisanego wolontariusza)
 
+        public int? ShoppingListId { get; set; }
+        public ShoppingList? ShoppingList { get; set; }
+
     }
 }

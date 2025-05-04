@@ -1,0 +1,26 @@
+﻿@model IEnumerable<PlatformaWsparciaProjekt.Models.ShoppingList>
+
+<h2>Dostępne listy zakupów</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tytuł</th>
+            <th>Senior</th>
+            <th>Akcja</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var list in Model)
+        {
+            <tr>
+                <td>@list.Title</td>
+                <td>@list.Senior.FirstName @list.Senior.LastName</td>
+                <td>
+                    <a asp-action="Take" asp-route-id="@list.Id" class="btn btn-success btn-sm">Zrealizuję</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

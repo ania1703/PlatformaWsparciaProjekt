@@ -6,6 +6,7 @@ using PlatformaWsparciaProjekt.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace PlatformaWsparciaProjekt.Controllers
 {
@@ -76,7 +77,7 @@ namespace PlatformaWsparciaProjekt.Controllers
 
             return View(assignedRequests);
         }
-       
+
 
 
 
@@ -84,6 +85,27 @@ namespace PlatformaWsparciaProjekt.Controllers
         // DODAWANIE NOWEGO ZGŁOSZENIA
         public IActionResult Create()
         {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+
+            // Jeśli senior – pobierz jego listy zakupów
+            if (userRole == "Senior")
+            {
+                var shoppingLists = _context.ShoppingLists
+                    .Where(l => l.SeniorId == userId)
+                    .Select(l => new SelectListItem
+                    {
+                        Value = l.Id.ToString(),
+                        Text = l.Title
+                    }).ToList();
+
+                ViewBag.ShoppingLists = shoppingLists;
+            }
+            else
+            {
+                ViewBag.ShoppingLists = new List<SelectListItem>();
+            }
+
             return View();
         }
 
@@ -103,13 +125,41 @@ namespace PlatformaWsparciaProjekt.Controllers
                 else if (userRole == "Volunteer")
                     helpRequest.VolunteerId = userId;
 
+                // 🔗 NIE tworzymy nowej listy zakupów – użytkownik wybiera z dropdowna
+
                 _context.Add(helpRequest);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
+            // jeśli ModelState niepoprawny – załaduj ponownie listy do ViewBag
+            var retryUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            ViewBag.ShoppingLists = _context.ShoppingLists
+                .Where(l => l.SeniorId == retryUserId)
+                .Select(l => new SelectListItem
+                {
+                    Value = l.Id.ToString(),
+                    Text = l.Title
+                }).ToList();
+
             return View(helpRequest);
         }
+
+
+        public IActionResult Details(int id)
+        {
+            var request = _context.HelpRequests
+                .Include(r => r.Senior)
+                .Include(r => r.Volunteer)
+                .Include(r => r.ShoppingList)
+                    .ThenInclude(sl => sl.Items) // <- to ładuje produkty
+                .FirstOrDefault(r => r.Id == id);
+
+            if (request == null) return NotFound();
+
+            return View(request);
+        }
+
 
 
         // EDYCJA ZGŁOSZENIA

@@ -1,0 +1,23 @@
+﻿@model IEnumerable<PlatformaWsparciaProjekt.Models.ShoppingListStatusViewModel>
+
+<h2>Moje listy zakupów</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tytuł</th>
+            <th>Data</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var list in Model)
+        {
+            <tr>
+                <td>@list.ShoppingList.Title</td>
+                <td>@list.ShoppingList.CreatedAt.ToShortDateString()</td>
+                <td>@list.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,14 @@
+﻿@model PlatformaWsparciaProjekt.Models.ShoppingList
+
+<h2>Nowa lista zakupów</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label">Tytuł</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Utwórz listę</button>
+</form>
+

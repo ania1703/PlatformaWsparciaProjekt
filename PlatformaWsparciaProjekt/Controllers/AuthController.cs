@@ -30,7 +30,22 @@ namespace PlatformaWsparciaProjekt.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model); // wraca z błędami walidacji
+                return View(model);
+            }
+
+            // Sprawdzenie czy email lub telefon już istnieje
+            bool emailExists = _context.Seniors.Any(s => s.Email == model.Email) ||
+                               _context.Volunteers.Any(v => v.Email == model.Email);
+            bool phoneExists = _context.Seniors.Any(s => s.Phone == model.Phone) ||
+                               _context.Volunteers.Any(v => v.Phone == model.Phone);
+
+            if (emailExists || phoneExists)
+            {
+                if (emailExists)
+                    ModelState.AddModelError("Email", "Użytkownik z tym adresem e-mail już istnieje.");
+                if (phoneExists)
+                    ModelState.AddModelError("Phone", "Użytkownik z tym numerem telefonu już istnieje.");
+                return View(model);
             }
 
             if (model.Role == "Senior")

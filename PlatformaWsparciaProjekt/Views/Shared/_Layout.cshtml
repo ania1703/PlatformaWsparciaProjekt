@@ -66,6 +66,19 @@
                             <a class="nav-link" asp-controller="HelpRequest" asp-action="MyAssignments">Moje zgłoszenia</a>
                         </li>
                     }
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Senior"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                🛒 Zakupy
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="ShoppingList" asp-action="Create">Nowa lista</a></li>
+                                <li><a class="dropdown-item" asp-controller="ShoppingList" asp-action="MyLists">Moje listy</a></li>
+                            </ul>
+                        </li>
+                    }
+
                 </ul>
 
                 <ul class="navbar-nav ms-auto">
