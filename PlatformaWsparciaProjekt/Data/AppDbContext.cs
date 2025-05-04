@@ -12,6 +12,8 @@ namespace PlatformaWsparciaProjekt.Data
         public DbSet<Volunteer> Volunteers { get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<Rating> Ratings { get; set; }
+        public DbSet<ShoppingList> ShoppingLists { get; set; }
+        public DbSet<ShoppingItem> ShoppingItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

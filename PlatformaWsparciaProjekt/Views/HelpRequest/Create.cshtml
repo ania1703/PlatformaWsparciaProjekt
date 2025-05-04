@@ -3,7 +3,6 @@
 <h2 class="mb-4">Nowe Zgłoszenie Pomocy</h2>
 
 <form asp-action="Create" method="post" class="card p-4 shadow-sm">
-    @* WALIDACJA GŁÓWNA *@
     <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
     <div class="mb-3">
@@ -33,6 +32,13 @@
             <option value="High">Wysoki</option>
             <option value="Medium">Średni</option>
             <option value="Low">Niski</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Powiąż z listą zakupów (opcjonalnie)</label>
+        <select asp-for="ShoppingListId" class="form-select" asp-items="ViewBag.ShoppingLists">
+            <option value="">-- Wybierz listę --</option>
         </select>
     </div>
 

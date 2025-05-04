@@ -1,0 +1,38 @@
+﻿@model PlatformaWsparciaProjekt.Models.HelpRequest
+
+<h2>Szczegóły zgłoszenia</h2>
+
+<p><strong>Tytuł:</strong> @Model.Title</p>
+<p><strong>Opis:</strong> @Model.Description</p>
+<p><strong>Kategoria:</strong> @Model.Category</p>
+<p><strong>Priorytet:</strong> @Model.Priority</p>
+<p><strong>Data zgłoszenia:</strong> @Model.CreatedAt.ToShortDateString()</p>
+
+@if (Model.ShoppingListId != null && User.IsInRole("Senior"))
+{
+    <p>
+        <strong>Lista zakupów:</strong>
+        <a asp-controller="ShoppingList" asp-action="Items" asp-route-id="@Model.ShoppingListId" class="btn btn-outline-primary btn-sm">
+            Zobacz listę
+        </a>
+    </p>
+}
+
+
+@if (Model.ShoppingList != null && Model.ShoppingList.Items?.Any() == true)
+{
+    <h5 class="mt-4">🛒 Produkty do zakupu:</h5>
+    <ul class="list-group mb-3">
+        @foreach (var item in Model.ShoppingList.Items)
+        {
+            <li class="list-group-item d-flex justify-content-between">
+                <span>@item.Name @($"(x{item.Quantity})")</span>
+                <span>@(item.IsPurchased ? "✔️" : "🛒")</span>
+            </li>
+        }
+    </ul>
+}
+
+
+<a asp-action="Index" class="btn btn-secondary mt-3">← Powrót</a>
+

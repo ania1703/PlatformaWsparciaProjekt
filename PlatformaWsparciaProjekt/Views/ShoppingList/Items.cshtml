@@ -1,0 +1,36 @@
+﻿@model PlatformaWsparciaProjekt.Models.ShoppingList
+
+<h2>Dodaj produkty do listy: @Model.Title</h2>
+
+<form asp-action="AddItem" method="post">
+    <input type="hidden" name="listId" value="@Model.Id" />
+
+    <div class="mb-3">
+        <label for="itemName">Nazwa produktu</label>
+        <input type="text" name="itemName" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="quantity">Ilość</label>
+        <input type="number" name="quantity" class="form-control" value="1" min="1" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Dodaj produkt</button>
+</form>
+
+@if (Model.Items.Any())
+{
+    <h4 class="mt-4">Produkty na liście:</h4>
+    <ul class="list-group">
+        @foreach (var item in Model.Items)
+        {
+            <li class="list-group-item d-flex justify-content-between">
+                <span>@item.Name @($"(x{item.Quantity})")</span>
+                <span>@(item.IsPurchased ? "✔️" : "🛒")</span>
+            </li>
+
+
+        }
+    </ul>
+}
+

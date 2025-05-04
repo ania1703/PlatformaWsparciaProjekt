@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlatformaWsparciaProjekt.Data;
 
@@ -11,9 +12,11 @@ using PlatformaWsparciaProjekt.Data;
 namespace PlatformaWsparciaProjekt.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250504192331_migracja2")]
+    partial class migracja2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,9 +55,6 @@ namespace PlatformaWsparciaProjekt.Migrations
                     b.Property<int?>("SeniorId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ShoppingListId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -66,8 +66,6 @@ namespace PlatformaWsparciaProjekt.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("SeniorId");
-
-                    b.HasIndex("ShoppingListId");
 
                     b.HasIndex("VolunteerId");
 
@@ -296,18 +294,12 @@ namespace PlatformaWsparciaProjekt.Migrations
                         .HasForeignKey("SeniorId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("PlatformaWsparciaProjekt.Models.ShoppingList", "ShoppingList")
-                        .WithMany()
-                        .HasForeignKey("ShoppingListId");
-
                     b.HasOne("PlatformaWsparciaProjekt.Models.Volunteer", "Volunteer")
                         .WithMany()
                         .HasForeignKey("VolunteerId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Senior");
-
-                    b.Navigation("ShoppingList");
 
                     b.Navigation("Volunteer");
                 });
