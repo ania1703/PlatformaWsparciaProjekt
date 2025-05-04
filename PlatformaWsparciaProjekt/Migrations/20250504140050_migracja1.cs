@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PlatformaWsparciaProjekt.Migrations
 {
     /// <inheritdoc />
-    public partial class InitRatingFix : Migration
+    public partial class migracja1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

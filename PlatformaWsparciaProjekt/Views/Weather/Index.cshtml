@@ -1,16 +1,134 @@
-﻿@model PlatformaWsparciaProjekt.Models.WeatherInfo
+﻿@model PlatformaWsparciaProjekt.Models.WeatherCombinedViewModel
 
-<h2>Pogoda w @Model?.City</h2>
+@{
+    ViewData["Title"] = "Pogoda";
+}
+
+@functions {
+    private string GetCityName(string code)
+    {
+        return code switch
+        {
+            "Warsaw" => "Warszawa",
+            "Krakow" => "Kraków",
+            "Gdansk" => "Gdańsk",
+            "Wroclaw" => "Wrocław",
+            "Poznan" => "Poznań",
+            "Lodz" => "Łódź",
+            "Szczecin" => "Szczecin",
+            "Katowice" => "Katowice",
+            "Bialystok" => "Białystok",
+            "Rzeszow" => "Rzeszów",
+            _ => code
+        };
+    }
+}
+
+<h2 class="mb-3">Pogoda w @GetCityName(ViewBag.SelectedCity)</h2>
+
+@{
+    var selected = ViewBag.SelectedCity as string ?? "Warsaw";
+}
+
+<form method="get" asp-controller="Weather" asp-action="Index" class="mb-4">
+    <label for="city" class="form-label">Wybierz miasto:</label>
+    <select name="city" id="city" class="form-select w-auto d-inline-block" onchange="this.form.submit()">
+        <option value="Warsaw" selected="@(selected == "Warsaw")">Warszawa</option>
+        <option value="Krakow" selected="@(selected == "Krakow")">Kraków</option>
+        <option value="Gdansk" selected="@(selected == "Gdansk")">Gdańsk</option>
+        <option value="Wroclaw" selected="@(selected == "Wroclaw")">Wrocław</option>
+        <option value="Poznan" selected="@(selected == "Poznan")">Poznań</option>
+        <option value="Lodz" selected="@(selected == "Lodz")">Łódź</option>
+        <option value="Szczecin" selected="@(selected == "Szczecin")">Szczecin</option>
+        <option value="Katowice" selected="@(selected == "Katowice")">Katowice</option>
+        <option value="Bialystok" selected="@(selected == "Bialystok")">Białystok</option>
+        <option value="Rzeszow" selected="@(selected == "Rzeszow")">Rzeszów</option>
+    </select>
+</form>
+
 
 @if (ViewBag.Error != null)
 {
     <div class="alert alert-danger">@ViewBag.Error</div>
+    <div class="alert alert-secondary">@ViewBag.Exception</div>
 }
-else if (Model != null)
+else
 {
-    <div class="card p-4 shadow-sm" style="max-width: 300px;">
-        <h4>@Model.Description</h4>
-        <p><strong>Temperatura:</strong> @Model.Temperature &deg;C</p>
-        <img src="@Model.IconUrl" alt="Ikona pogody" />
+    <div class="row">
+        <!-- AKTUALNA POGODA -->
+        <div class="col-md-4">
+            <h5>Aktualna pogoda</h5>
+            <div class="card p-4 shadow-sm mb-3">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="@Model.Current.IconUrl" style="width: 60px;" class="me-3" />
+                    <h4 class="mb-0 text-capitalize">@Model.Current.Description</h4>
+                </div>
+                <p><strong>Temperatura:</strong> @Model.Current.Temperature.ToString("0.#") &deg;C</p>
+                <p><strong>Wilgotność:</strong> @Model.Current.Humidity %</p>
+                <p><strong>Ciśnienie:</strong> @Model.Current.Pressure hPa</p>
+                <p><strong>Wiatr:</strong> @Model.Current.WindSpeed.ToString("0.#") m/s</p>
+                <p><strong>Wschód słońca:</strong> @Model.Current.Sunrise.ToString("HH:mm")</p>
+                <p><strong>Zachód słońca:</strong> @Model.Current.Sunset.ToString("HH:mm")</p>
+            </div>
+        </div>
+
+        <!-- PROGNOZA GODZINOWA -->
+        <div class="col-md-4">
+            <h5>Prognoza godzinowa</h5>
+            <div id="carouselHours" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for (int i = 0; i < Model.Forecast.Count; i++)
+                    {
+                        var item = Model.Forecast[i];
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <div class="card p-3 shadow-sm">
+                                <h6>@item.Date.ToString("dddd HH:mm")</h6>
+                                <img src="@item.IconUrl" style="width: 50px;" />
+                                <p class="text-capitalize mb-0">@item.Description</p>
+                                <p><strong>@item.Temperature.ToString("0.#")</strong> &deg;C</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselHours" data-bs-slide="prev"
+                        style="width: 40px; height: 40px; top: 50%; left: -20px; transform: translateY(-50%);">
+                    <span class="carousel-control-prev-icon bg-secondary rounded-circle" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselHours" data-bs-slide="next"
+                        style="width: 40px; height: 40px; top: 50%; right: -20px; transform: translateY(-50%);">
+                    <span class="carousel-control-next-icon bg-secondary rounded-circle" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- PROGNOZA DZIENNA -->
+        <div class="col-md-4">
+            <h5>Prognoza dzienna</h5>
+            <div id="carouselDays" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for (int i = 0; i < Model.DailyForecast.Count; i++)
+                    {
+                        var day = Model.DailyForecast[i];
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <div class="card p-3 shadow-sm">
+                                <h6>@day.Date.ToString("dddd")</h6>
+                                <img src="@day.IconUrl" style="width: 50px;" />
+                                <p class="text-capitalize">@day.Description</p>
+                                <p><strong>Min:</strong> @day.MinTemp.ToString("0.#") &deg;C</p>
+                                <p><strong>Max:</strong> @day.MaxTemp.ToString("0.#") &deg;C</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselDays" data-bs-slide="prev"
+                        style="width: 40px; height: 40px; top: 50%; left: -20px; transform: translateY(-50%);">
+                    <span class="carousel-control-prev-icon bg-secondary rounded-circle" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselDays" data-bs-slide="next"
+                        style="width: 40px; height: 40px; top: 50%; right: -20px; transform: translateY(-50%);">
+                    <span class="carousel-control-next-icon bg-secondary rounded-circle" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
     </div>
 }
