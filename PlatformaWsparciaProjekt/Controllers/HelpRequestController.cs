@@ -81,7 +81,7 @@ namespace PlatformaWsparciaProjekt.Controllers
 
 
 
-
+        [Authorize(Roles = "Senior")]
         // DODAWANIE NOWEGO ZGŁOSZENIA
         public IActionResult Create()
         {
@@ -111,6 +111,7 @@ namespace PlatformaWsparciaProjekt.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Senior")]
         public async Task<IActionResult> Create(HelpRequest helpRequest)
         {
             if (ModelState.IsValid)
@@ -163,6 +164,7 @@ namespace PlatformaWsparciaProjekt.Controllers
 
 
         // EDYCJA ZGŁOSZENIA
+        [Authorize(Roles = "Senior")]
         public IActionResult Edit(int id)
         {
             var request = _context.HelpRequests.Include(r => r.Senior).FirstOrDefault(r => r.Id == id);
@@ -207,6 +209,7 @@ namespace PlatformaWsparciaProjekt.Controllers
         }
 
         // USUWANIE ZGŁOSZENIA
+        [Authorize(Roles = "Senior")]
         public IActionResult Delete(int id)
         {
             var request = _context.HelpRequests.Include(r => r.Senior).FirstOrDefault(r => r.Id == id);

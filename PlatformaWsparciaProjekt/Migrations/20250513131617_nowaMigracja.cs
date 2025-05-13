@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PlatformaWsparciaProjekt.Migrations
 {
     /// <inheritdoc />
-    public partial class migracja1 : Migration
+    public partial class nowaMigracja : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,38 +50,6 @@ namespace PlatformaWsparciaProjekt.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Volunteers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HelpRequests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SeniorId = table.Column<int>(type: "int", nullable: true),
-                    VolunteerId = table.Column<int>(type: "int", nullable: true),
-                    CreatedByUserId = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Priority = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HelpRequests", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_HelpRequests_Seniors_SeniorId",
-                        column: x => x.SeniorId,
-                        principalTable: "Seniors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_HelpRequests_Volunteers_VolunteerId",
-                        column: x => x.VolunteerId,
-                        principalTable: "Volunteers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -134,10 +102,103 @@ namespace PlatformaWsparciaProjekt.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ShoppingLists",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SeniorId = table.Column<int>(type: "int", nullable: false),
+                    VolunteerId = table.Column<int>(type: "int", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShoppingLists", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShoppingLists_Seniors_SeniorId",
+                        column: x => x.SeniorId,
+                        principalTable: "Seniors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ShoppingLists_Volunteers_VolunteerId",
+                        column: x => x.VolunteerId,
+                        principalTable: "Volunteers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HelpRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SeniorId = table.Column<int>(type: "int", nullable: true),
+                    VolunteerId = table.Column<int>(type: "int", nullable: true),
+                    CreatedByUserId = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Priority = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShoppingListId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HelpRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HelpRequests_Seniors_SeniorId",
+                        column: x => x.SeniorId,
+                        principalTable: "Seniors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_HelpRequests_ShoppingLists_ShoppingListId",
+                        column: x => x.ShoppingListId,
+                        principalTable: "ShoppingLists",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_HelpRequests_Volunteers_VolunteerId",
+                        column: x => x.VolunteerId,
+                        principalTable: "Volunteers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShoppingItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    IsPurchased = table.Column<bool>(type: "bit", nullable: false),
+                    ShoppingListId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShoppingItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShoppingItems_ShoppingLists_ShoppingListId",
+                        column: x => x.ShoppingListId,
+                        principalTable: "ShoppingLists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_HelpRequests_SeniorId",
                 table: "HelpRequests",
                 column: "SeniorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HelpRequests_ShoppingListId",
+                table: "HelpRequests",
+                column: "ShoppingListId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HelpRequests_VolunteerId",
@@ -158,6 +219,21 @@ namespace PlatformaWsparciaProjekt.Migrations
                 name: "IX_Requests_VolunteerId",
                 table: "Requests",
                 column: "VolunteerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShoppingItems_ShoppingListId",
+                table: "ShoppingItems",
+                column: "ShoppingListId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShoppingLists_SeniorId",
+                table: "ShoppingLists",
+                column: "SeniorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShoppingLists_VolunteerId",
+                table: "ShoppingLists",
+                column: "VolunteerId");
         }
 
         /// <inheritdoc />
@@ -171,6 +247,12 @@ namespace PlatformaWsparciaProjekt.Migrations
 
             migrationBuilder.DropTable(
                 name: "Requests");
+
+            migrationBuilder.DropTable(
+                name: "ShoppingItems");
+
+            migrationBuilder.DropTable(
+                name: "ShoppingLists");
 
             migrationBuilder.DropTable(
                 name: "Seniors");

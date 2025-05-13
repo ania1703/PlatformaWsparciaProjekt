@@ -16,5 +16,5 @@ namespace PlatformaWsparciaProjekt.Models
         public double Score { get; set; } // Ocena w skali np. 1-5
         public string Comment { get; set; }
         public DateTime RatedAt { get; set; } = DateTime.Now;
-    }
+        }
 }

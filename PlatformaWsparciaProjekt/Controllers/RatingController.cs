@@ -4,6 +4,7 @@ using PlatformaWsparciaProjekt.Data;
 using PlatformaWsparciaProjekt.Models;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using PlatformaWsparciaProjekt.ViewModels;
 
 namespace PlatformaWsparciaProjekt.Controllers
 {
@@ -26,10 +27,33 @@ namespace PlatformaWsparciaProjekt.Controllers
 
         [HttpGet]
 
+
+        [HttpGet]
         public IActionResult Index()
         {
+            var volunteersWithRatings = _context.Volunteers
+                .Where(v => _context.Ratings.Any(r => r.VolunteerId == v.Id))
+                .Select(v => new VolunteerRatingSummaryViewModel
+                {
+                    VolunteerId = v.Id,
+                    FirstName = v.FirstName,
+                    LastName = v.LastName,
+                    AverageScore = Math.Round(
+                        _context.Ratings
+                            .Where(r => r.VolunteerId == v.Id)
+                            .Average(r => r.Score), 2)
+                })
+                .ToList();
+
+            return View(volunteersWithRatings);
+        }
+
+
+        public IActionResult Details(int volunteerId)
+        {
             var ratings = _context.Ratings
-                .Include(r => r.Volunteer)
+                .Where(r => r.VolunteerId == volunteerId)
+                .Include(r => r.RatedBy)
                 .ToList();
 
             return View(ratings);
@@ -61,5 +85,43 @@ namespace PlatformaWsparciaProjekt.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public IActionResult VolunteerRatingsSummary()
+        {
+            var ratings = _context.Ratings
+                .Include(r => r.Volunteer)
+                .Where(r => r.VolunteerId != null)
+                .ToList();
+
+            var summary = ratings
+                .GroupBy(r => r.VolunteerId)
+                .Select(g => new
+                {
+                    Volunteer = g.First().Volunteer!,
+                    AverageScore = Math.Round(g.Average(r => r.Score), 2),
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.AverageScore)
+                .ToList();
+
+            return View(summary);
+        }
+
+        [HttpGet]
+        public IActionResult VolunteerDetails(int id)
+        {
+            var volunteer = _context.Volunteers.FirstOrDefault(v => v.Id == id);
+            if (volunteer == null) return NotFound();
+
+            var ratings = _context.Ratings
+                .Where(r => r.VolunteerId == id)
+                .OrderByDescending(r => r.RatedAt)
+                .ToList();
+
+            ViewBag.Volunteer = volunteer;
+            return View(ratings);
+        }
+
     }
 }

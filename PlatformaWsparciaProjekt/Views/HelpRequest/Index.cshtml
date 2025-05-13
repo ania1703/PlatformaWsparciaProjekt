@@ -60,7 +60,7 @@
                             <a class="btn btn-outline-warning btn-sm" asp-action="RemoveVolunteer" asp-route-id="@request.Id">Usuń przypisanie</a>
                         }
 
-                        @if (request.CreatedByUserId == userId)
+                        @if (userRole == "Senior" && request.Senior != null && request.CreatedByUserId == userId)
                         {
                             <a class="btn btn-outline-primary btn-sm me-2" asp-action="Edit" asp-route-id="@request.Id">Edytuj</a>
                             <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@request.Id">Usuń</a>

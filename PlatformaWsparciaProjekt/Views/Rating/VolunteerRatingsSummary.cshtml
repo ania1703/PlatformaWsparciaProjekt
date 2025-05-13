@@ -1,0 +1,37 @@
+﻿@model List<dynamic>
+@{
+    ViewData["Title"] = "Oceny wolontariuszy";
+}
+
+<h2>Oceny wolontariuszy</h2>
+
+@if (!Model.Any())
+{
+    <p>Brak ocen.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Wolontariusz</th>
+                <th>Średnia ocena</th>
+                <th>Liczba ocen</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Volunteer.FirstName @item.Volunteer.LastName</td>
+                    <td>@item.AverageScore</td>
+                    <td>@item.Count</td>
+                    <td>
+                        <a asp-action="VolunteerDetails" asp-route-id="@item.Volunteer.Id" class="btn btn-sm btn-info">Szczegóły</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

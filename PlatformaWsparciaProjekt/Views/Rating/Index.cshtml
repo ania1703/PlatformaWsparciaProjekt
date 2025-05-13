@@ -1,38 +1,32 @@
-﻿@model List<PlatformaWsparciaProjekt.Models.Rating>
-@{
-    ViewData["Title"] = "Oceny";
-}
+﻿@model List<PlatformaWsparciaProjekt.ViewModels.VolunteerRatingSummaryViewModel>
 
-<h2>Wystawione oceny</h2>
+<h2>Oceny wolontariuszy</h2>
 
 @if (!Model.Any())
 {
-    <p>Brak ocen.</p>
+    <p>Brak ocenionych wolontariuszy.</p>
 }
 else
 {
-
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>Wolontariusz</th>
-                <th>Ocena</th>
-                <th>Komentarz</th>
-                <th>Data</th>
+                <th>Średnia ocen</th>
+                <th>Akcje</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var rating in Model)
+            @foreach (var item in Model)
             {
                 <tr>
+                    <td>@item.FirstName @item.LastName</td>
+                    <td>@item.AverageScore</td>
                     <td>
-                        @(rating.Volunteer != null
-                            ? rating.Volunteer.FirstName + " " + rating.Volunteer.LastName
-                            : "Noname")
+                        <a asp-controller="Rating" asp-action="VolunteerDetails" asp-route-id="@item.VolunteerId" class="btn btn-primary">
+                            Szczegóły
+                        </a>
                     </td>
-                    <td>@rating.Score</td>
-                    <td>@rating.Comment</td>
-                    <td>@rating.RatedAt.ToString("yyyy-MM-dd HH:mm")</td>
                 </tr>
             }
         </tbody>

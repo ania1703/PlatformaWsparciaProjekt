@@ -1,0 +1,34 @@
+﻿@model List<PlatformaWsparciaProjekt.Models.Rating>
+@{
+    ViewData["Title"] = "Szczegóły ocen wolontariusza";
+    var volunteer = ViewBag.Volunteer as PlatformaWsparciaProjekt.Models.Volunteer;
+}
+
+<h2>Szczegóły ocen dla: @volunteer.FirstName @volunteer.LastName</h2>
+
+@if (!Model.Any())
+{
+    <p>Ten wolontariusz nie ma jeszcze ocen.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Ocena</th>
+                <th>Komentarz</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var rating in Model)
+            {
+                <tr>
+                    <td>@rating.Score</td>
+                    <td>@rating.Comment</td>
+                    <td>@rating.RatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
