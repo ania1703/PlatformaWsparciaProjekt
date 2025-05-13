@@ -1,7 +1,10 @@
 ﻿@model List<PlatformaWsparciaProjekt.Models.Rating>
+@using System.Security.Claims
+
 @{
     ViewData["Title"] = "Szczegóły ocen wolontariusza";
     var volunteer = ViewBag.Volunteer as PlatformaWsparciaProjekt.Models.Volunteer;
+    var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 }
 
 <h2>Szczegóły ocen dla: @volunteer.FirstName @volunteer.LastName</h2>
@@ -18,6 +21,7 @@ else
                 <th>Ocena</th>
                 <th>Komentarz</th>
                 <th>Data</th>
+                <th>Akcje</th>
             </tr>
         </thead>
         <tbody>
@@ -27,6 +31,13 @@ else
                     <td>@rating.Score</td>
                     <td>@rating.Comment</td>
                     <td>@rating.RatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        @if (rating.RatedById == currentUserId)
+                        {
+                            <a class="btn btn-outline-primary btn-sm me-2" asp-action="Edit" asp-route-id="@rating.Id">Edytuj</a>
+                            <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@rating.Id">Usuń</a>
+                       }
+                    </td>
                 </tr>
             }
         </tbody>

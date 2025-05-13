@@ -1,0 +1,26 @@
+﻿@model PlatformaWsparciaProjekt.Models.Rating
+@{
+    ViewData["Title"] = "Usuń opinię";
+}
+
+<h2>Usuń opinię</h2>
+
+<div>
+    <h4>Czy na pewno chcesz usunąć tę opinię?</h4>
+    <dl class="row">
+        <dt class="col-sm-2">Ocena</dt>
+        <dd class="col-sm-10">@Model.Score</dd>
+
+        <dt class="col-sm-2">Komentarz</dt>
+        <dd class="col-sm-10">@Model.Comment</dd>
+
+        <dt class="col-sm-2">Data</dt>
+        <dd class="col-sm-10">@Model.RatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Usuń</button>
+        <a asp-action="VolunteerDetails" asp-route-id="@Model.VolunteerId" class="btn btn-secondary">Anuluj</a>
+    </form>
+</div>

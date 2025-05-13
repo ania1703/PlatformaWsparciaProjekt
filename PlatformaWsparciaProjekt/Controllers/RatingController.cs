@@ -8,7 +8,7 @@ using PlatformaWsparciaProjekt.ViewModels;
 
 namespace PlatformaWsparciaProjekt.Controllers
 {
-    [Authorize(Roles = "Senior")]
+    [Authorize]
     public class RatingController : Controller
     {
         private readonly AppDbContext _context;
@@ -19,6 +19,7 @@ namespace PlatformaWsparciaProjekt.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Senior")]
         public IActionResult Create()
         {
             ViewBag.Volunteers = _context.Volunteers.ToList();
@@ -121,6 +122,58 @@ namespace PlatformaWsparciaProjekt.Controllers
 
             ViewBag.Volunteer = volunteer;
             return View(ratings);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Senior")]
+        public IActionResult Edit(int id)
+        {
+            var rating = _context.Ratings.FirstOrDefault(r => r.Id == id);
+            if (rating == null || rating.RatedById != int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!))
+                return Forbid();
+
+            return View(rating);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Senior")]
+        public IActionResult Edit(int id, Rating updatedRating)
+        {
+            var rating = _context.Ratings.FirstOrDefault(r => r.Id == id);
+            if (rating == null || rating.RatedById != int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!))
+                return Forbid();
+
+            rating.Score = updatedRating.Score;
+            rating.Comment = updatedRating.Comment;
+
+            _context.SaveChanges();
+            return RedirectToAction("VolunteerDetails", new { id = rating.VolunteerId });
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Senior")]
+        public IActionResult Delete(int id)
+        {
+            var rating = _context.Ratings.FirstOrDefault(r => r.Id == id);
+            if (rating == null || rating.RatedById != int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!))
+                return Forbid();
+
+            return View(rating);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Senior")]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var rating = _context.Ratings.FirstOrDefault(r => r.Id == id);
+            if (rating == null || rating.RatedById != int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!))
+                return Forbid();
+
+            _context.Ratings.Remove(rating);
+            _context.SaveChanges();
+            return RedirectToAction("VolunteerDetails", new { id = rating.VolunteerId });
         }
 
     }

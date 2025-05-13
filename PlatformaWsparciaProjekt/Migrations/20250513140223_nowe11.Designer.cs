@@ -12,8 +12,8 @@ using PlatformaWsparciaProjekt.Data;
 namespace PlatformaWsparciaProjekt.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250513131617_nowaMigracja")]
-    partial class nowaMigracja
+    [Migration("20250513140223_nowe11")]
+    partial class nowe11
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
