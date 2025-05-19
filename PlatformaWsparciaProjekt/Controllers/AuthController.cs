@@ -118,7 +118,7 @@ namespace PlatformaWsparciaProjekt.Controllers
             var principal = new ClaimsPrincipal(identity);
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
+            TempData["SuccessMessage"] = "Zalogowano pomyślnie.";
             return RedirectToAction("Index", "Home");
         }
 

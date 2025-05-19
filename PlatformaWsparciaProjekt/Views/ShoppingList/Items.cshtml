@@ -2,21 +2,35 @@
 
 <h2>Dodaj produkty do listy: @Model.Title</h2>
 
-<form asp-action="AddItem" method="post">
-    <input type="hidden" name="listId" value="@Model.Id" />
+@if (Model.IsFinalized)
+{
+    <p><span class="badge bg-secondary">Lista zakończona</span></p>
+}
 
-    <div class="mb-3">
-        <label for="itemName">Nazwa produktu</label>
-        <input type="text" name="itemName" class="form-control" required />
-    </div>
 
-    <div class="mb-3">
-        <label for="quantity">Ilość</label>
-        <input type="number" name="quantity" class="form-control" value="1" min="1" required />
-    </div>
+@if (!Model.IsFinalized && User.IsInRole("Senior"))
+{
+    <form asp-action="AddItem" method="post">
+        <input type="hidden" name="listId" value="@Model.Id" />
 
-    <button type="submit" class="btn btn-primary">Dodaj produkt</button>
-</form>
+        <div class="mb-3">
+            <label for="itemName">Nazwa produktu</label>
+            <input type="text" name="itemName" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="quantity">Ilość</label>
+            <input type="number" name="quantity" class="form-control" value="1" min="1" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Dodaj produkt</button>
+    </form>
+}
+else
+{
+    <p><em>Lista zakończona lub jesteś wolontariuszem – brak możliwości edycji.</em></p>
+}
+
 
 @if (Model.Items.Any())
 {
@@ -33,4 +47,16 @@
         }
     </ul>
 }
+
+@if (!Model.IsFinalized)
+{
+    <form asp-action="Finalize" method="post" asp-route-id="@Model.Id">
+        <button type="submit" class="btn btn-danger mt-2">Zakończ listę</button>
+    </form>
+}
+else
+{
+    <p class="mt-2"><span class="badge bg-secondary">Lista zakończona</span></p>
+}
+
 

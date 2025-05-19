@@ -21,6 +21,7 @@ namespace PlatformaWsparciaProjekt.Models
         public string Category { get; set; }
         public string Priority { get; set; }
 
+
         public Senior? Senior { get; set; }  // Obiekt Senior, który składa zgłoszenie
         public Volunteer? Volunteer { get; set; }  // Obiekt Volunteer, który jest przypisany do zgłoszenia (może być null, jeśli nie ma przypisanego wolontariusza)
 

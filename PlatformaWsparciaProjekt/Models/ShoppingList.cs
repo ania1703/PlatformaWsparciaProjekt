@@ -5,6 +5,8 @@
         public int Id { get; set; }
         public string Title { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public bool IsFinalized { get; set; } = false;
+
 
         public int SeniorId { get; set; }
         public Senior Senior { get; set; }
