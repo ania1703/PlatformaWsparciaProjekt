@@ -12,8 +12,8 @@ using PlatformaWsparciaProjekt.Data;
 namespace PlatformaWsparciaProjekt.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250513140223_nowe11")]
-    partial class nowe11
+    [Migration("20250519194640_naprawa")]
+    partial class naprawa
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -229,6 +229,9 @@ namespace PlatformaWsparciaProjekt.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsFinalized")
+                        .HasColumnType("bit");
 
                     b.Property<int>("SeniorId")
                         .HasColumnType("int");

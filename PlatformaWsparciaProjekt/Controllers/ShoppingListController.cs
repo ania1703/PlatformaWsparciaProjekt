@@ -31,7 +31,7 @@ namespace PlatformaWsparciaProjekt.Controllers
 
             _context.ShoppingLists.Add(shoppingList);
             _context.SaveChanges();
-
+            TempData["SuccessMessage"] = "Lista zakupów została utworzona.";
             return RedirectToAction("Items", new { id = shoppingList.Id });
         }
 
@@ -51,12 +51,18 @@ namespace PlatformaWsparciaProjekt.Controllers
             var listStatuses = lists.Select(list =>
             {
                 var matchingRequest = helpRequests.FirstOrDefault(hr => hr.ShoppingListId == list.Id);
-                var isInProgress = matchingRequest != null && matchingRequest.VolunteerId != null;
+                var isInProgress = matchingRequest?.VolunteerId != null;
+
+                string status;
+                if (!list.IsFinalized)
+                    status = "W trakcie tworzenia";
+                else
+                    status = isInProgress ? "W realizacji" : "Oczekuje";
 
                 return new ShoppingListStatusViewModel
                 {
                     ShoppingList = list,
-                    Status = isInProgress ? "W realizacji" : "Oczekuje"
+                    Status = status
                 };
             }).ToList();
 
@@ -115,8 +121,22 @@ namespace PlatformaWsparciaProjekt.Controllers
             });
 
             _context.SaveChanges();
+            TempData["SuccessMessage"] = "Produkt został dodany do listy.";
             return RedirectToAction("Items", new { id = listId });
         }
+
+        [HttpPost]
+        public IActionResult Finalize(int id)
+        {
+            var list = _context.ShoppingLists.FirstOrDefault(l => l.Id == id);
+            if (list == null) return NotFound();
+
+            list.IsFinalized = true;
+            _context.SaveChanges();
+            TempData["SuccessMessage"] = "Lista zakupów została zakończona.";
+            return RedirectToAction("Items", new { id });
+        }
+
     }
 }
 

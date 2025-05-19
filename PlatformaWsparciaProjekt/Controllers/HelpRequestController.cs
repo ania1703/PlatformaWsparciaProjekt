@@ -70,10 +70,14 @@ namespace PlatformaWsparciaProjekt.Controllers
             // Pobieranie ID zalogowanego wolontariusza
             var volunteerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            // Pobieranie zgłoszeń przypisanych do wolontariusza
             var assignedRequests = _context.HelpRequests
                 .Where(hr => hr.VolunteerId == volunteerId)
                 .ToList();
+
+            if (!assignedRequests.Any())
+            {
+                TempData["InfoMessage"] = "Nie masz jeszcze przypisanych zgłoszeń.";
+            }
 
             return View(assignedRequests);
         }
@@ -130,6 +134,7 @@ namespace PlatformaWsparciaProjekt.Controllers
 
                 _context.Add(helpRequest);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Zgłoszenie zostało pomyślnie utworzone.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -202,6 +207,7 @@ namespace PlatformaWsparciaProjekt.Controllers
                 original.Category = request.Category;
                 original.Priority = request.Priority;
                 _context.SaveChanges();
+                TempData["SuccessMessage"] = "Zgłoszenie zostało zaktualizowane.";
                 return RedirectToAction("Index");
             }
 
@@ -244,6 +250,7 @@ namespace PlatformaWsparciaProjekt.Controllers
 
             _context.HelpRequests.Remove(request);
             _context.SaveChanges();
+            TempData["SuccessMessage"] = "Zgłoszenie zostało usunięte.";
             return RedirectToAction("Index");
         }
 
@@ -263,6 +270,7 @@ namespace PlatformaWsparciaProjekt.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Zostałeś przypisany do zgłoszenia.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -289,9 +297,10 @@ namespace PlatformaWsparciaProjekt.Controllers
 
             request.Volunteer = null;
             await _context.SaveChangesAsync();
-
+            TempData["InfoMessage"] = "Zostałeś wypisany ze zgłoszenia.";
             return RedirectToAction(nameof(Index));
         }
+
 
     }
 }

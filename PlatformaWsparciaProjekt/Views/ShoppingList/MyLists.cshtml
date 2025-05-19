@@ -14,7 +14,11 @@
         @foreach (var list in Model)
         {
             <tr>
-                <td>@list.ShoppingList.Title</td>
+                <td>
+                    <a asp-controller="ShoppingList" asp-action="Items" asp-route-id="@list.ShoppingList.Id">
+                        @list.ShoppingList.Title
+                    </a>
+                </td>
                 <td>@list.ShoppingList.CreatedAt.ToShortDateString()</td>
                 <td>@list.Status</td>
             </tr>
