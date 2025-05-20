@@ -126,6 +126,27 @@ namespace PlatformaWsparciaProjekt.Controllers
         }
 
         [HttpPost]
+        public IActionResult RemoveItem(int listId, int itemId)
+        {
+            var list = _context.ShoppingLists
+                .Include(l => l.Items)
+                .FirstOrDefault(l => l.Id == listId);
+
+            if (list == null) return NotFound();
+
+            var item = list.Items.FirstOrDefault(i => i.Id == itemId);
+            if (item != null)
+            {
+                list.Items.Remove(item);
+                _context.SaveChanges();
+                TempData["SuccessMessage"] = "Produkt został usunięty z listy.";
+            }
+
+            return RedirectToAction("Items", new { id = listId });
+        }
+
+
+        [HttpPost]
         public IActionResult Finalize(int id)
         {
             var list = _context.ShoppingLists.FirstOrDefault(l => l.Id == id);
