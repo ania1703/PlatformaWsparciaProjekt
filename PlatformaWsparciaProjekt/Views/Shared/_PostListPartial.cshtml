@@ -1,0 +1,24 @@
+@model IEnumerable<PlatformaWsparciaProjekt.Models.Post>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Brak postów do wyświetlenia.</p>
+}
+else
+{
+    @foreach (var post in Model)
+    {
+        <div class="card mb-4">
+            <div class="card-body">
+                <p>@post.Content</p>
+
+                @if (!string.IsNullOrEmpty(post.ImagePath))
+                {
+                    <img src="@post.ImagePath" class="img-fluid mt-2" alt="Zdjęcie do posta" />
+                }
+
+                <p class="text-muted mt-2">Dodano: @post.CreatedAt.ToString("g")</p>
+            </div>
+        </div>
+    }
+}

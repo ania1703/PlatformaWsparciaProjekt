@@ -14,6 +14,7 @@ namespace PlatformaWsparciaProjekt.Data
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<ShoppingList> ShoppingLists { get; set; }
         public DbSet<ShoppingItem> ShoppingItems { get; set; }
+        public DbSet<Post> Posts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

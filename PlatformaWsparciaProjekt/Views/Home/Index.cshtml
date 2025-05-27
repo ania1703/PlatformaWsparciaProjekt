@@ -1,13 +1,106 @@
-﻿@{
+﻿@using PlatformaWsparciaProjekt.Models
+@model List<Post>
+
+@{
     ViewData["Title"] = "Strona Główna";
+    var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+    var currentUserRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
 }
 
-<p>Jesteś zalogowany jako: @User.Identity.Name</p>
+<style>
+    .main-background {
+        background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('/img/volunteer_senior.jpg') no-repeat center center;
+        background-size: cover;
+        min-height: calc(100vh - 80px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 60px 20px;
+    }
 
-<div class="text-center">
-    <h1 class="hero-title">Platforma Wsparcia – Razem łatwiej!</h1>
-    <p class="hero-subtitle">
-        Łączymy seniorów z wolontariuszami, by codzienne życie stało się prostsze, bezpieczniejsze i pełne uśmiechu.
-        Dołącz do nas i twórz dobro razem z innymi 💙
-    </p>
+    .hero-content {
+        background-color: rgba(255, 255, 255, 0.85);
+        padding: 40px;
+        border-radius: 16px;
+        text-align: center;
+        color: #333;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin-bottom: 40px;
+    }
+
+    .hero-title {
+        font-size: 3em;
+        margin-bottom: 20px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.4em;
+    }
+</style>
+
+<div class="main-background">
+    <div class="hero-content">
+        <h1 class="hero-title">Platforma Wsparcia – Razem łatwiej!</h1>
+        <p class="hero-subtitle">
+            Łączymy seniorów z wolontariuszami, by codzienne życie stało się prostsze, bezpieczniejsze i pełne uśmiechu.
+            Dołącz do nas i twórz dobro razem z innymi 💙
+        </p>
+        
+
+        <a class="btn btn-success mt-3" asp-controller="Post" asp-action="Create">➕ Dodaj post</a>
+    </div>
+</div>
+
+<div class="container mt-5">
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning text-center">
+            ⚠️ Brak postów – dodaj pierwszy!
+        </div>
+    }
+    else
+    {
+        <div class="d-flex flex-column align-items-center">
+            @foreach (var post in Model)
+            {
+                <div class="card mb-4 shadow-sm" style="max-width: 700px; width: 100%;">
+                    <div class="card-body">
+                        <p>@post.Content</p>
+
+                        @if (!string.IsNullOrEmpty(post.ImagePath))
+                        {
+                            <div class="text-center">
+                                <img src="@post.ImagePath" class="img-fluid rounded mb-3" style="max-height: 450px; object-fit: cover;" alt="Zdjęcie do posta" />
+                            </div>
+                        }
+
+                        <p class="text-muted mb-1">Dodano: @post.CreatedAt.ToString("g")</p>
+                        <p class="text-muted">Użytkownik ID: @post.UserId, Rola: @post.Role</p>
+
+                        @if (User.Identity.IsAuthenticated && post.UserId == currentUserId && post.Role == currentUserRole)
+                        {
+                            <div class="d-flex gap-2 mt-3">
+                                <a asp-controller="Post" asp-action="Edit" asp-route-id="@post.Id"
+                                   class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center"
+                                   style="height: 38px; padding: 0 14px;">
+                                    Edytuj
+                                </a>
+                                <form asp-controller="Post" asp-action="Delete" asp-route-id="@post.Id"
+                                      method="post" onsubmit="return confirm('Czy na pewno chcesz usunąć ten post?');">
+                                    <button type="submit"
+                                            class="btn btn-outline-danger btn-sm d-flex align-items-center justify-content-center"
+                                            style="height: 38px; padding: 0 14px;">
+                                        Usuń
+                                    </button>
+                                </form>
+                            </div>
+
+
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>
