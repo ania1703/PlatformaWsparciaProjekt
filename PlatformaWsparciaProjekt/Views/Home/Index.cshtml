@@ -3,8 +3,25 @@
 
 @{
     ViewData["Title"] = "Strona Główna";
-    var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
-    var currentUserRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
+
+    int? currentUserId = null;
+    string currentUserRole = null;
+
+    if (User.Identity.IsAuthenticated)
+    {
+        var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        var roleClaim = User.FindFirst(System.Security.Claims.ClaimTypes.Role);
+
+        if (userIdClaim != null)
+        {
+            currentUserId = int.Parse(userIdClaim.Value);
+        }
+
+        if (roleClaim != null)
+        {
+            currentUserRole = roleClaim.Value;
+        }
+    }
 }
 
 <style>
